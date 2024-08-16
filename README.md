@@ -1,4 +1,5 @@
 # AWS AutoMQ BYOC Environment Terrafrom module
+![Preview](https://img.shields.io/badge/Lifecycle_Stage-Preview-blue?style=flat&logoColor=8A3BE2&labelColor=rgba)
 
 This module is designed for deploying the AutoMQ BYOC (Bring Your Own Cloud) environment using the AWS Provider within an AWS cloud environment.
 
