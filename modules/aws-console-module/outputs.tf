@@ -41,7 +41,7 @@ output "automq_byoc_instance_profile_arn" {
   value       = aws_iam_instance_profile.automq_byoc_instance_profile.arn
 }
 
-output "automq_byoc_env_webui_address" {
+output "automq_byoc_endpoint" {
   value = "http://${aws_eip.web_ip.public_ip}:8080"
 }
 
