@@ -23,9 +23,9 @@ output "automq_byoc_security_group_name" {
   value = module.automq_byoc.automq_byoc_security_group_name
 }
 
-output "automq_byoc_env_webui_address" {
+output "automq_byoc_endpoint" {
   description = "Address accessed by AutoMQ BYOC service"
-  value = module.automq_byoc.automq_byoc_env_webui_address
+  value = module.automq_byoc.automq_byoc_endpoint
 }
 
 output "automq_byoc_data_bucket_name" {
