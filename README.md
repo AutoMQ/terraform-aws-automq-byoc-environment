@@ -20,7 +20,7 @@ Use this module to install the AutoMQ BYOC environment, supporting two modes:
 
 ```terraform
 module "automq_byoc" {
-  source = "terraform-automq-modules/automq-byoc-console"
+  source = "AutoMQ/automq-byoc-environmet/aws"
 
   # Set the identifier for the environment to be installed. This ID will be used for naming internal resources. The environment ID supports only uppercase and lowercase English letters, numbers, and hyphens (-). It must start with a letter and is limited to a length of 32 characters.
   automq_byoc_env_id                       = "example" 
@@ -36,7 +36,7 @@ To install the AutoMQ BYOC environment using an existing VPC, ensure your existi
 
 ```terraform
 module "automq_byoc" {
-  source = "terraform-automq-modules/automq-byoc-console"
+  source = "AutoMQ/automq-byoc-environmet/aws"
   
   # Set the identifier for the environment to be installed. This ID will be used for naming internal resources. The environment ID supports only uppercase and lowercase English letters, numbers, and hyphens (-). It must start with a letter and is limited to a length of 32 characters.  
   automq_byoc_env_id                       = "example"
