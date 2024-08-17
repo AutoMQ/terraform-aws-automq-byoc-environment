@@ -8,7 +8,7 @@ Upon completion of the installation, the module will output the endpoint of the 
 - **Using the Web UI to manage resources**: This method allows users to manage instances, topics, ACLs, and other resources through a web-ui.
 - **Using Terraform to manage resources**: This method requires users to access the AutoMQ BYOC environment via a web browser for the first time to create a Service Account. Subsequently, users can manage resources within the environment using the Service Account's Access Key and the AutoMQ Terraform Provider.
 
-For managing instances, topics, and other resources within the AutoMQ BYOC environment using the AutoMQ Terraform Provider, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access).
+For managing instances, topics, and other resources within the AutoMQ BYOC environment using the AutoMQ Terraform Provider, please refer to the [documentation](https://registry.terraform.io/providers/AutoMQ/automq/latest/docs).
 
 # Module Usage
 Use this module to install the AutoMQ BYOC environment, supporting two modes:
@@ -32,7 +32,7 @@ module "automq_byoc" {
 
 ## Using an existing VPC
 
-To install the AutoMQ BYOC environment using an existing VPC, ensure your existing VPC meets the necessary requirements. You can find the detailed requirements in the [doc](https://docs.automq.com/zh/automq-cloud/getting-started/create-byoc-environment/aws/step-1-installing-env-with-ami#%E6%AD%A5%E9%AA%A4-3%E5%90%AF%E5%8A%A8-ec2-%E5%AE%9E%E4%BE%8B%E5%AE%89%E8%A3%85%E7%8E%AF%E5%A2%83).
+To install the AutoMQ BYOC environment using an existing VPC, ensure your existing VPC meets the necessary requirements. You can find the detailed requirements in the [Prepare VPC Documents](https://docs.automq.com/automq-cloud/getting-started/install-byoc-environment/aws/prepare-vpc).
 
 ```terraform
 module "automq_byoc" {
