@@ -7,21 +7,15 @@ variable "automq_byoc_env_id" {
   }
 }
 
+variable "cloud_provider_region" {
+  description = "Set the cloud provider's region. AutoMQ will deploy to this region."
+  type        = string
+}
+
 variable "create_new_vpc" {
   description = "This setting determines whether to create a new VPC. If set to true, a new VPC spanning three availability zones will be automatically created, which is recommended only for POC scenarios. For production scenario using AutoMQ, you should provide the VPC where the current Kafka application resides and check the current VPC against the requirements specified in the [Prepare VPC Documents](https://docs.automq.com/automq-cloud/getting-started/install-byoc-environment/aws/prepare-vpc)."
   type        = bool
   default     = true
-}
-
-variable "automq_byoc_ec2_instance_type" {
-  description = "Set the EC2 instance type; this parameter is used only for deploying the AutoMQ environment console. You need to provide an EC2 instance type with at least 2 cores and 8 GB of memory."
-  type        = string
-  default     = "m5d.large"
-}
-
-variable "cloud_provider_region" {
-  description = "Set the cloud provider's region. AutoMQ will deploy to this region."
-  type        = string
 }
 
 variable "automq_byoc_vpc_id" {
@@ -36,10 +30,10 @@ variable "automq_byoc_env_console_public_subnet_id" {
   default     = ""
 }
 
-variable "automq_byoc_env_version" {
-  description = "Set the version for the AutoMQ BYOC environment console. It is recommended to keep the default value, which is the latest version. Historical release note reference [document](https://docs.automq.com/automq-cloud/release-notes)."
-  type        = string
-  default     = "latest"
+variable "automq_byoc_env_console_cidr" {
+  description = "Set CIDR block to restrict the source IP address range for accessing the AutoMQ environment console. If not set, the default is 0.0.0.0/0."
+  type = string
+  default = "0.0.0.0/0"
 }
 
 variable "automq_byoc_data_bucket_name" {
@@ -54,6 +48,18 @@ variable "automq_byoc_ops_bucket_name" {
   default     = ""
 }
 
+variable "automq_byoc_ec2_instance_type" {
+  description = "Set the EC2 instance type; this parameter is used only for deploying the AutoMQ environment console. You need to provide an EC2 instance type with at least 2 cores and 8 GB of memory."
+  type        = string
+  default     = "m5d.large"
+}
+
+variable "automq_byoc_env_version" {
+  description = "Set the version for the AutoMQ BYOC environment console. It is recommended to keep the default value, which is the latest version. Historical release note reference [document](https://docs.automq.com/automq-cloud/release-notes)."
+  type        = string
+  default     = "latest"
+}
+
 variable "specified_ami_by_marketplace" {
   description = "The parameter defaults to true, which means the AMI will be obtained from AWS Marketplace. If you wish to use a custom AMI, set this parameter to false and specify the `automq_byoc_env_console_ami` parameter with your custom AMI ID."
   type = bool
@@ -64,10 +70,4 @@ variable "automq_byoc_env_console_ami" {
   description = "When parameter `specified_ami_by_marketplace` set to false, this parameter must set a custom AMI to deploy automq console."
   type = string
   default = ""
-}
-
-variable "automq_byoc_env_console_cidr" {
-  description = "Set CIDR block to restrict the source IP address range for accessing the AutoMQ environment console. If not set, the default is 0.0.0.0/0."
-  type = string
-  default = "0.0.0.0/0"
 }
