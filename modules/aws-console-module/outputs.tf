@@ -23,6 +23,14 @@ output "automq_byoc_security_group_name" {
   value = aws_security_group.allow_all.name
 }
 
+output "automq_byoc_data_bucket_name" {
+  value = var.automq_byoc_data_bucket_name
+}
+
+output "automq_byoc_ops_bucket_name" {
+  value = var.automq_byoc_ops_bucket_name
+}
+
 output "automq_byoc_role_arn" {
   value = aws_iam_role.automq_byoc_role.arn
 }
