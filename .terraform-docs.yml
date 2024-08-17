@@ -1,0 +1,10 @@
+formatter: markdown
+output-file: README.md
+output-mode: inject
+sort:
+  enabled: false
+settings:
+  indent: 2
+  escape: false
+  required: true
+  color: false
