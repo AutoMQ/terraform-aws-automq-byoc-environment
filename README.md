@@ -128,7 +128,7 @@ No requirements.
 | <a name="output_automq_byoc_env_console_ec2_instance_ip"></a> [automq\_byoc\_env\_console\_ec2\_instance\_ip](#output\_automq\_byoc\_env\_console\_ec2\_instance\_ip) | The instance IP of the deployed AutoMQ BYOC control panel. You can access the service through this IP. |
 | <a name="output_automq_byoc_env_console_public_subnet_id"></a> [automq\_byoc\_env\_console\_public\_subnet\_id](#output\_automq\_byoc\_env\_console\_public\_subnet\_id) | AutoMQ WebUI is deployed under this subnet. |
 | <a name="output_automq_byoc_env_id"></a> [automq\_byoc\_env\_id](#output\_automq\_byoc\_env\_id) | This parameter is used to create resources within the environment. Additionally, all cloud resource names will incorporate this parameter as part of their names.This parameter supports only numbers, uppercase and lowercase English letters, and hyphens. It must start with a letter and is limited to a length of 32 characters. |
-| <a name="output_automq_byoc_env_webui_address"></a> [automq\_byoc\_env\_webui\_address](#output\_automq\_byoc\_env\_webui\_address) | Address accessed by AutoMQ BYOC service |
+| <a name="output_automq_byoc_endpoint"></a> [automq\_byoc\_env\_webui\_address](#output\_automq\_byoc\_env\_webui\_address) | Address accessed by AutoMQ BYOC service |
 | <a name="output_automq_byoc_instance_id"></a> [automq\_byoc\_instance\_id](#output\_automq\_byoc\_instance\_id) | AutoMQ BYOC Console instance ID. |
 | <a name="output_automq_byoc_instance_profile_arn"></a> [automq\_byoc\_instance\_profile\_arn](#output\_automq\_byoc\_instance\_profile\_arn) | Instance configuration file ARN |
 | <a name="output_automq_byoc_ops_bucket_arn"></a> [automq\_byoc\_ops\_bucket\_arn](#output\_automq\_byoc\_ops\_bucket\_arn) | Ops storage bucket arn. |
