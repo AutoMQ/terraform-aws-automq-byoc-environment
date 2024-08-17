@@ -7,13 +7,9 @@ module "automq_byoc_data_bucket_name" {
   source = "terraform-aws-modules/s3-bucket/aws"
   version = "4.1.2"
 
-  # Switch whether to create a bucket. If it is true, it will be created. If it is false, it will use the name entered by the user. If the name is empty, it will default to automq-data.
-  create_bucket = var.create_automq_byoc_data_bucket
-  bucket        = var.create_automq_byoc_data_bucket ? (
-    var.specific_data_bucket_name == "" ? "automq-data-${var.automq_byoc_env_id}" : var.specific_data_bucket_name
-  ) : (
-    var.automq_byoc_data_bucket_name == "" ? "automq-data-${var.automq_byoc_env_id}" : var.automq_byoc_data_bucket_name
-  )
+  # If you don't specify a data-bucket, it will be created, otherwise the available bucket provided will be used
+  create_bucket = var.automq_byoc_data_bucket_name == "" ? true : false
+  bucket        = "automq-data-${var.automq_byoc_env_id}"
   force_destroy = true
 }
 
@@ -22,12 +18,8 @@ module "automq_byoc_ops_bucket_name" {
   source  = "terraform-aws-modules/s3-bucket/aws"
   version = "4.1.2"
 
-  create_bucket = var.create_automq_byoc_ops_bucket
-  bucket        = var.create_automq_byoc_ops_bucket ? (
-    var.specific_ops_bucket_name == "" ? "automq-ops-${var.automq_byoc_env_id}" : var.specific_ops_bucket_name
-  ) : (
-    var.automq_byoc_ops_bucket_name == "" ? "automq-ops-${var.automq_byoc_env_id}" : var.automq_byoc_ops_bucket_name
-  )
+  create_bucket = var.automq_byoc_ops_bucket_name == "" ? true : false
+  bucket        = "automq-ops-${var.automq_byoc_env_id}"
   force_destroy = true
 }
 
@@ -124,6 +116,8 @@ resource "aws_vpc_endpoint" "s3" {
 locals {
   automq_byoc_vpc_id                       = var.create_new_vpc ? module.automq_byoc_vpc[0].vpc_id : var.automq_byoc_vpc_id
   automq_byoc_env_console_public_subnet_id = var.create_new_vpc ? element(module.automq_byoc_vpc[0].public_subnets, 0) : var.automq_byoc_env_console_public_subnet_id
+  automq_data_bucket                       = var.automq_byoc_data_bucket_name == "" ? module.automq_byoc_data_bucket_name.s3_bucket_id : "${var.automq_byoc_data_bucket_name}-${var.automq_byoc_env_id}"
+  automq_ops_bucket                        = var.automq_byoc_ops_bucket_name == "" ? module.automq_byoc_ops_bucket_name.s3_bucket_id : "${var.automq_byoc_ops_bucket_name}-${var.automq_byoc_env_id}"
 }
 
 module "automq_byoc" {
@@ -132,8 +126,8 @@ module "automq_byoc" {
   cloud_provider_region                    = var.cloud_provider_region
   automq_byoc_vpc_id                       = local.automq_byoc_vpc_id
   automq_byoc_env_console_public_subnet_id = local.automq_byoc_env_console_public_subnet_id
-  automq_byoc_data_bucket_name             = module.automq_byoc_data_bucket_name.s3_bucket_id
-  automq_byoc_ops_bucket_name              = module.automq_byoc_ops_bucket_name.s3_bucket_id
+  automq_byoc_data_bucket_name             = local.automq_data_bucket
+  automq_byoc_ops_bucket_name              = local.automq_ops_bucket
   automq_byoc_env_id                       = var.automq_byoc_env_id
   automq_byoc_ec2_instance_type            = var.automq_byoc_ec2_instance_type
   automq_byoc_env_version                  = var.automq_byoc_env_version
