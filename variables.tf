@@ -51,7 +51,7 @@ variable "automq_byoc_ops_bucket_name" {
 variable "automq_byoc_ec2_instance_type" {
   description = "Set the EC2 instance type; this parameter is used only for deploying the AutoMQ environment console. You need to provide an EC2 instance type with at least 2 cores and 8 GB of memory."
   type        = string
-  default     = "m5d.large"
+  default     = "t3.large"
 }
 
 variable "automq_byoc_env_version" {

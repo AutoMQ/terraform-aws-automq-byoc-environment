@@ -41,16 +41,11 @@ module "automq_byoc_vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
+  # 标签统一
   tags = {
     Terraform   = "true"
     Environment = "dev"
   }
-}
-
-resource "aws_eip" "nat" {
-  count = 3
-
-  domain = "vpc"
 }
 
 resource "aws_security_group" "endpoint_sg" {
@@ -74,6 +69,7 @@ resource "aws_security_group" "endpoint_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
+  # tag 统一
   tags = {
     Name = "automq-byoc-endpoint-sg-${var.automq_byoc_env_id}"
   }
@@ -120,6 +116,7 @@ locals {
   automq_ops_bucket                        = var.automq_byoc_ops_bucket_name == "" ? module.automq_byoc_ops_bucket_name.s3_bucket_id : "${var.automq_byoc_ops_bucket_name}-${var.automq_byoc_env_id}"
 }
 
+# 把 aws 相关资源放到 aws.tf，部署时聚合。
 module "automq_byoc" {
   source = "./modules/aws-console-module"
 
