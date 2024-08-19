@@ -68,7 +68,7 @@ resource "aws_iam_policy" "automq_byoc_policy" {
   name        = "automq-byoc-service-policy-${var.automq_byoc_env_id}"
   description = "Custom policy for automq_byoc service"
 
-  policy = file("${path.module}/automq_byoc_policy.json")
+  policy = file("${path.module}/automq_byoc_role_policy.json")
 }
 
 # Attach strategies to roles
