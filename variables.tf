@@ -32,8 +32,8 @@ variable "automq_byoc_env_console_public_subnet_id" {
 
 variable "automq_byoc_env_console_cidr" {
   description = "Set CIDR block to restrict the source IP address range for accessing the AutoMQ environment console. If not set, the default is 0.0.0.0/0."
-  type = string
-  default = "0.0.0.0/0"
+  type        = string
+  default     = "0.0.0.0/0"
 }
 
 variable "automq_byoc_data_bucket_name" {
@@ -62,12 +62,12 @@ variable "automq_byoc_env_version" {
 
 variable "specified_ami_by_marketplace" {
   description = "The parameter defaults to true, which means the AMI will be obtained from AWS Marketplace. If you wish to use a custom AMI, set this parameter to false and specify the `automq_byoc_env_console_ami` parameter with your custom AMI ID."
-  type = bool
-  default = true
+  type        = bool
+  default     = true
 }
 
 variable "automq_byoc_env_console_ami" {
   description = "When parameter `specified_ami_by_marketplace` set to false, this parameter must set a custom AMI to deploy automq console."
-  type = string
-  default = ""
+  type        = string
+  default     = ""
 }
