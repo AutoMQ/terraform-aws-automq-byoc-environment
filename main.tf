@@ -175,7 +175,10 @@ resource "aws_iam_policy" "automq_byoc_policy" {
   name        = "automq-byoc-service-policy-${var.automq_byoc_env_id}"
   description = "Custom policy for automq_byoc service"
 
-  policy = file("${path.module}/automq_byoc_role_policy.json")
+  policy = templatefile("${path.module}/automq_byoc_role_policy.json.tpl", {
+    automq_data_bucket = local.automq_data_bucket
+    automq_ops_bucket  = local.automq_ops_bucket
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment" {
