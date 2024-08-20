@@ -4,7 +4,7 @@ provider "aws" {
 
 # Conditional creation of data bucket
 module "automq_byoc_data_bucket_name" {
-  source = "terraform-aws-modules/s3-bucket/aws"
+  source  = "terraform-aws-modules/s3-bucket/aws"
   version = "4.1.2"
 
   # If you don't specify a data-bucket, it will be created, otherwise the available bucket provided will be used
@@ -34,23 +34,18 @@ module "automq_byoc_vpc" {
   name = "automq-byoc-vpc-${var.automq_byoc_env_id}"
   cidr = "10.0.0.0/16"
 
-  azs = slice(data.aws_availability_zones.available.names, 0, 3)
-  public_subnets = ["10.0.0.0/20"]
+  azs             = slice(data.aws_availability_zones.available.names, 0, 3)
+  public_subnets  = ["10.0.0.0/20"]
   private_subnets = ["10.0.128.0/20", "10.0.144.0/20", "10.0.160.0/20"]
 
   enable_dns_support   = true
   enable_dns_hostnames = true
 
+  # 标签统一
   tags = {
     Terraform   = "true"
     Environment = "dev"
   }
-}
-
-resource "aws_eip" "nat" {
-  count = 3
-
-  domain = "vpc"
 }
 
 resource "aws_security_group" "endpoint_sg" {
@@ -61,16 +56,16 @@ resource "aws_security_group" "endpoint_sg" {
   vpc_id      = module.automq_byoc_vpc[0].vpc_id
 
   ingress {
-    from_port = 443
-    to_port   = 443
-    protocol  = "tcp"
+    from_port   = 443
+    to_port     = 443
+    protocol    = "tcp"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
   egress {
-    from_port = 0
-    to_port   = 0
-    protocol  = "-1"
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
 
@@ -112,7 +107,6 @@ resource "aws_vpc_endpoint" "s3" {
   }
 }
 
-# Determine the vpc and subnet id, mainly related to the set variables of whether to create a VPC
 locals {
   automq_byoc_vpc_id                       = var.create_new_vpc ? module.automq_byoc_vpc[0].vpc_id : var.automq_byoc_vpc_id
   automq_byoc_env_console_public_subnet_id = var.create_new_vpc ? element(module.automq_byoc_vpc[0].public_subnets, 0) : var.automq_byoc_env_console_public_subnet_id
@@ -120,18 +114,139 @@ locals {
   automq_ops_bucket                        = var.automq_byoc_ops_bucket_name == "" ? module.automq_byoc_ops_bucket_name.s3_bucket_id : "${var.automq_byoc_ops_bucket_name}-${var.automq_byoc_env_id}"
 }
 
-module "automq_byoc" {
-  source = "./modules/aws-console-module"
+data "aws_vpc" "selected" {
+  id = local.automq_byoc_vpc_id
+}
 
-  cloud_provider_region                    = var.cloud_provider_region
-  automq_byoc_vpc_id                       = local.automq_byoc_vpc_id
-  automq_byoc_env_console_public_subnet_id = local.automq_byoc_env_console_public_subnet_id
-  automq_byoc_data_bucket_name             = local.automq_data_bucket
-  automq_byoc_ops_bucket_name              = local.automq_ops_bucket
-  automq_byoc_env_id                       = var.automq_byoc_env_id
-  automq_byoc_ec2_instance_type            = var.automq_byoc_ec2_instance_type
-  automq_byoc_env_version                  = var.automq_byoc_env_version
-  specified_ami_by_marketplace             = var.specified_ami_by_marketplace
-  automq_byoc_env_console_ami              = var.automq_byoc_env_console_ami
-  automq_byoc_env_console_cidr             = var.automq_byoc_env_console_cidr
+locals {
+  ssm_parameter_path = "/aws/service/marketplace/prod-nl2cyzygb46fw/${var.automq_byoc_env_version}"
+}
+
+data "aws_ssm_parameter" "marketplace_ami" {
+  name = local.ssm_parameter_path
+}
+
+data "aws_ami" "marketplace_ami_details" {
+  most_recent = true
+
+  filter {
+    name   = "image-id"
+    values = [data.aws_ssm_parameter.marketplace_ami.value]
+  }
+}
+
+resource "aws_security_group" "allow_all" {
+  vpc_id = data.aws_vpc.selected.id
+
+  ingress {
+    from_port   = 8080
+    to_port     = 8080
+    protocol    = "tcp"
+    cidr_blocks = [var.automq_byoc_env_console_cidr]
+  }
+
+  egress {
+    from_port   = 0
+    to_port     = 0
+    protocol    = "-1"
+    cidr_blocks = ["0.0.0.0/0"]
+  }
+}
+
+resource "aws_iam_role" "automq_byoc_role" {
+  name = "automq-byoc-service-role-${var.automq_byoc_env_id}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action    = "sts:AssumeRole"
+        Effect    = "Allow"
+        Sid       = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+}
+
+resource "aws_iam_policy" "automq_byoc_policy" {
+  name        = "automq-byoc-service-policy-${var.automq_byoc_env_id}"
+  description = "Custom policy for automq_byoc service"
+
+  policy = templatefile("${path.module}/automq_byoc_role_policy.json.tpl", {
+    automq_data_bucket = local.automq_data_bucket
+    automq_ops_bucket  = local.automq_ops_bucket
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment" {
+  role       = aws_iam_role.automq_byoc_role.name
+  policy_arn = aws_iam_policy.automq_byoc_policy.arn
+}
+
+resource "aws_iam_instance_profile" "automq_byoc_instance_profile" {
+  name = "automq-byoc-instance-profile-${var.automq_byoc_env_id}"
+  role = aws_iam_role.automq_byoc_role.name
+}
+
+resource "aws_instance" "web" {
+  ami                    = var.specified_ami_by_marketplace ? data.aws_ami.marketplace_ami_details.id : var.automq_byoc_env_console_ami
+  instance_type          = var.automq_byoc_ec2_instance_type
+  subnet_id              = local.automq_byoc_env_console_public_subnet_id
+  vpc_security_group_ids = [aws_security_group.allow_all.id]
+
+  iam_instance_profile = aws_iam_instance_profile.automq_byoc_instance_profile.name
+
+  root_block_device {
+    volume_size = 20
+    volume_type = "gp3"
+  }
+
+  ebs_block_device {
+    device_name = "/dev/sdh"
+    volume_size = 20
+    volume_type = "gp3"
+  }
+
+  tags = {
+    Name = "automq-byoc-console-${var.automq_byoc_env_id}"
+  }
+
+  user_data = <<-EOF
+              #cloud-config
+              bootcmd:
+                - |
+                  if [ ! -f "/home/admin/config.properties" ]; then
+                    touch /home/admin/config.properties
+                    echo "cmp.provider.credential=vm-role://${local.aws_iam_instance_profile_arn_encoded}@aws" >> /home/admin/config.properties
+                    echo 'cmp.provider.databucket=${local.automq_data_bucket}' >> /home/admin/config.properties
+                    echo 'cmp.provider.opsBucket=${local.automq_ops_bucket}' >> /home/admin/config.properties
+                    echo 'cmp.provider.instanceSecurityGroup=${aws_security_group.allow_all.id}' >> /home/admin/config.properties
+                    echo 'cmp.provider.instanceDNS=${aws_route53_zone.private.zone_id}' >> /home/admin/config.properties
+                    echo 'cmp.provider.instanceProfile=${aws_iam_instance_profile.automq_byoc_instance_profile.arn}' >> /home/admin/config.properties
+                    echo 'cmp.environmentId=${var.automq_byoc_env_id}' >> /home/admin/config.properties
+                  fi
+              EOF
+}
+
+resource "aws_route53_zone" "private" {
+  name = "${var.automq_byoc_env_id}.automq.private"
+
+  vpc {
+    vpc_id = local.automq_byoc_vpc_id
+  }
+
+  lifecycle {
+    create_before_destroy = true
+  }
+}
+
+resource "aws_eip" "web_ip" {
+  instance = aws_instance.web.id
+}
+
+locals {
+  aws_iam_instance_profile_arn_encoded = urlencode(aws_iam_instance_profile.automq_byoc_instance_profile.arn)
 }
