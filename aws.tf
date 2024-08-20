@@ -211,5 +211,5 @@ locals {
 }
 
 resource "aws_eip" "web_ip" {
-  instance = aws_instance.automq-byoc-console.id
+  instance = aws_instance.automq_byoc_console.id
 }

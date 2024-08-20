@@ -1,4 +1,4 @@
-resource "aws_instance" "automq-byoc-console" {
+resource "aws_instance" "automq_byoc_console" {
   ami                    = var.specified_ami_by_marketplace ? data.aws_ami.marketplace_ami_details.id : var.automq_byoc_env_console_ami
   instance_type          = var.automq_byoc_ec2_instance_type
   subnet_id              = local.automq_byoc_env_console_public_subnet_id
