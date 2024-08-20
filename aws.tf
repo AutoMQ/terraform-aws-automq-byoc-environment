@@ -22,18 +22,16 @@ module "automq_byoc_ops_bucket_name" {
   force_destroy = true
 }
 
-data "aws_availability_zones" "available" {}
+data "aws_availability_zones" "available_azs" {}
 
 module "automq_byoc_vpc" {
   source  = "terraform-aws-modules/vpc/aws"
   version = "5.0.0"
 
   count = var.create_new_vpc ? 1 : 0
-
-  name = "automq-byoc-vpc-${var.automq_byoc_env_id}"
   cidr = "10.0.0.0/16"
 
-  azs             = slice(data.aws_availability_zones.available.names, 0, 3)
+  azs             = slice(data.aws_availability_zones.available_azs.names, 0, 3)
   public_subnets  = ["10.0.0.0/20"]
   private_subnets = ["10.0.128.0/20", "10.0.144.0/20", "10.0.160.0/20"]
 
@@ -41,16 +39,15 @@ module "automq_byoc_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-
+    Name = "automq-byoc-vpc-${var.automq_byoc_env_id}"
     automqVendor   = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
 
-resource "aws_security_group" "endpoint_sg" {
+resource "aws_security_group" "vpc_endpoint_sg" {
   count = var.create_new_vpc ? 1 : 0
 
-  name        = "automq-byoc-endpoint-sg-${var.automq_byoc_env_id}"
   description = "Security group for VPC endpoint"
   vpc_id      = module.automq_byoc_vpc[0].vpc_id
 
@@ -75,13 +72,13 @@ resource "aws_security_group" "endpoint_sg" {
   }
 }
 
-resource "aws_vpc_endpoint" "ec2" {
+resource "aws_vpc_endpoint" "ec2_endpoint" {
   count = var.create_new_vpc ? 1 : 0
 
   vpc_id            = module.automq_byoc_vpc[0].vpc_id
   service_name      = "com.amazonaws.${var.cloud_provider_region}.ec2"
   vpc_endpoint_type = "Interface"
-  security_group_ids = [aws_security_group.endpoint_sg[0].id]
+  security_group_ids = [aws_security_group.vpc_endpoint_sg[0].id]
   subnet_ids        = module.automq_byoc_vpc[0].private_subnets
 
   private_dns_enabled = true
@@ -93,7 +90,7 @@ resource "aws_vpc_endpoint" "ec2" {
   }
 }
 
-resource "aws_vpc_endpoint" "s3" {
+resource "aws_vpc_endpoint" "s3_endpoint" {
   count = var.create_new_vpc ? 1 : 0
 
   vpc_id            = module.automq_byoc_vpc[0].vpc_id
@@ -119,7 +116,7 @@ locals {
   automq_ops_bucket                        = var.automq_byoc_ops_bucket_name == "" ? module.automq_byoc_ops_bucket_name.s3_bucket_id : "${var.automq_byoc_ops_bucket_name}-${var.automq_byoc_env_id}"
 }
 
-data "aws_vpc" "selected" {
+data "aws_vpc" "vpc_id" {
   id = local.automq_byoc_vpc_id
 }
 
@@ -140,9 +137,10 @@ data "aws_ami" "marketplace_ami_details" {
   }
 }
 
-resource "aws_security_group" "allow_all" {
-  vpc_id = data.aws_vpc.selected.id
+resource "aws_security_group" "automq_byoc_console_sg" {
+  vpc_id = data.aws_vpc.vpc_id.id
 
+  name = "automq-byoc-console-sg-${var.automq_byoc_env_id}"
   ingress {
     from_port   = 8080
     to_port     = 8080
@@ -196,7 +194,7 @@ resource "aws_iam_instance_profile" "automq_byoc_instance_profile" {
   role = aws_iam_role.automq_byoc_role.name
 }
 
-resource "aws_route53_zone" "private" {
+resource "aws_route53_zone" "private_r53" {
   name = "${var.automq_byoc_env_id}.automq.private"
 
   vpc {
@@ -213,5 +211,5 @@ locals {
 }
 
 resource "aws_eip" "web_ip" {
-  instance = aws_instance.web.id
+  instance = aws_instance.automq-byoc-console.id
 }
