@@ -15,7 +15,7 @@ output "automq_byoc_initial_username" {
 
 output "automq_byoc_initial_password" {
   description = "The initial password for the AutoMQ environment console. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
-  value = aws_instance.web.id
+  value = aws_instance.automq_byoc_console.id
 }
 
 output "automq_byoc_vpc_id" {
@@ -25,7 +25,7 @@ output "automq_byoc_vpc_id" {
 
 output "automq_byoc_instance_id" {
   description = "The EC2 instance id for AutoMQ Console."
-  value = aws_instance.web.id
+  value = aws_instance.automq_byoc_console.id
 }
 
 /*
@@ -51,7 +51,7 @@ output "automq_byoc_env_console_public_subnet_id" {
 
 output "automq_byoc_security_group_name" {
   description = "Security group bound to the AutoMQ BYOC service."
-  value = aws_security_group.allow_all.name
+  value = aws_security_group.automq_byoc_console_sg.name
 }
 
 output "automq_byoc_role_arn" {
@@ -71,7 +71,7 @@ output "automq_byoc_instance_profile_arn" {
 
 output "automq_byoc_vpc_route53_zone_id" {
   description = "Route53 bound to the VPC."
-  value = aws_route53_zone.private.zone_id
+  value = aws_route53_zone.private_r53.zone_id
 }
 
 output "automq_byoc_env_console_ami" {
