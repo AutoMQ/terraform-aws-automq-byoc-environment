@@ -30,6 +30,7 @@ module "automq_byoc_vpc" {
 
   count = var.create_new_vpc ? 1 : 0
   cidr = "10.0.0.0/16"
+  name = "automq-byoc-vpc-${var.automq_byoc_env_id}"
 
   azs             = slice(data.aws_availability_zones.available_azs.names, 0, 3)
   public_subnets  = ["10.0.0.0/20"]
@@ -39,7 +40,6 @@ module "automq_byoc_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    Name = "automq-byoc-vpc-${var.automq_byoc_env_id}"
     automqVendor   = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
