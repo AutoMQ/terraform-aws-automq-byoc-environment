@@ -28,6 +28,38 @@ module "automq_byoc" {
   # Set the target regionId of aws
   cloud_provider_region                    = "ap-southeast-1"  
 }
+
+# Necessary outputs
+output "automq_byoc_env_id" {
+  description = "This parameter is used to create resources within the environment."
+  value = module.automq-byoc.automq_byoc_env_id
+}
+
+output "automq_byoc_endpoint" {
+  description = "Address accessed by AutoMQ BYOC service"
+  value = module.automq-byoc.automq_byoc_endpoint
+}
+
+output "automq_byoc_initial_username" {
+  description = "The initial username for the AutoMQ environment console. It has the `EnvironmentAdmin` role permissions. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
+  value = "admin"
+}
+
+output "automq_byoc_initial_password" {
+  description = "The initial password for the AutoMQ environment console. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
+  value = module.automq-byoc.automq_byoc_initial_password
+}
+
+output "automq_byoc_vpc_id" {
+  description = "The VPC ID for the AutoMQ environment deployment."
+  value = module.automq-byoc.automq_byoc_vpc_id
+}
+
+output "automq_byoc_instance_id" {
+  description = "AutoMQ BYOC Console instance ID."
+  value = module.automq-byoc.automq_byoc_instance_id
+}
+
 ```
 
 ## Using an existing VPC
@@ -54,6 +86,38 @@ module "automq_byoc" {
   automq_byoc_env_console_public_subnet_id = "subnet-09500xxxxxb6fd28"  
   
 }
+
+# Necessary outputs
+output "automq_byoc_env_id" {
+  description = "This parameter is used to create resources within the environment."
+  value = module.automq-byoc.automq_byoc_env_id
+}
+
+output "automq_byoc_endpoint" {
+  description = "Address accessed by AutoMQ BYOC service"
+  value = module.automq-byoc.automq_byoc_endpoint
+}
+
+output "automq_byoc_initial_username" {
+  description = "The initial username for the AutoMQ environment console. It has the `EnvironmentAdmin` role permissions. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
+  value = "admin"
+}
+
+output "automq_byoc_initial_password" {
+  description = "The initial password for the AutoMQ environment console. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
+  value = module.automq-byoc.automq_byoc_initial_password
+}
+
+output "automq_byoc_vpc_id" {
+  description = "The VPC ID for the AutoMQ environment deployment."
+  value = module.automq-byoc.automq_byoc_vpc_id
+}
+
+output "automq_byoc_instance_id" {
+  description = "AutoMQ BYOC Console instance ID."
+  value = module.automq-byoc.automq_byoc_instance_id
+}
+
 ```
 After deployment is complete, you can refer to the output to obtain information such as the AutoMQ environment console endpoint, initial username, and initial password.
 
