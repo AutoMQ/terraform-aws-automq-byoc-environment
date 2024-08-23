@@ -10,6 +10,11 @@ module "automq_byoc_data_bucket_name" {
   create_bucket = var.automq_byoc_data_bucket_name == "" ? true : false
   bucket        = "automq-data-${var.automq_byoc_env_id}"
   force_destroy = true
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
 }
 
 # Conditional creation of ops bucket
@@ -20,6 +25,11 @@ module "automq_byoc_ops_bucket_name" {
   create_bucket = var.automq_byoc_ops_bucket_name == "" ? true : false
   bucket        = "automq-ops-${var.automq_byoc_env_id}"
   force_destroy = true
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
 }
 
 data "aws_availability_zones" "available_azs" {}
@@ -154,6 +164,11 @@ resource "aws_security_group" "automq_byoc_console_sg" {
     protocol    = "-1"
     cidr_blocks = ["0.0.0.0/0"]
   }
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
 }
 
 resource "aws_iam_role" "automq_byoc_role" {
@@ -172,6 +187,11 @@ resource "aws_iam_role" "automq_byoc_role" {
       },
     ]
   })
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
 }
 
 resource "aws_iam_policy" "automq_byoc_policy" {
@@ -182,6 +202,11 @@ resource "aws_iam_policy" "automq_byoc_policy" {
     automq_data_bucket = local.automq_data_bucket
     automq_ops_bucket  = local.automq_ops_bucket
   })
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment" {
@@ -192,6 +217,11 @@ resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment" {
 resource "aws_iam_instance_profile" "automq_byoc_instance_profile" {
   name = "automq-byoc-instance-profile-${var.automq_byoc_env_id}"
   role = aws_iam_role.automq_byoc_role.name
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
 }
 
 resource "aws_route53_zone" "private_r53" {
@@ -204,6 +234,11 @@ resource "aws_route53_zone" "private_r53" {
   lifecycle {
     create_before_destroy = true
   }
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
 }
 
 locals {
@@ -212,4 +247,9 @@ locals {
 
 resource "aws_eip" "web_ip" {
   instance = aws_instance.automq_byoc_console.id
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
 }
