@@ -11,12 +11,6 @@ resource "aws_instance" "automq_byoc_console" {
     volume_type = "gp3"
   }
 
-  ebs_block_device {
-    device_name = "/dev/sdh"
-    volume_size = 20
-    volume_type = "gp3"
-  }
-
   tags = {
     Name = "automq-byoc-console-${var.automq_byoc_env_id}"
     automqVendor   = "automq"
@@ -35,4 +29,21 @@ resource "aws_instance" "automq_byoc_console" {
     instance_profile_arn                 = aws_iam_instance_profile.automq_byoc_instance_profile.arn,
     environment_id                       = var.automq_byoc_env_id
   })
+}
+
+resource "aws_ebs_volume" "data_volume" {
+  availability_zone = aws_instance.automq_byoc_console.availability_zone
+  size              = 20
+  type              = "gp3"
+
+  tags = {
+    automqVendor   = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
+}
+
+resource "aws_volume_attachment" "data_volume_attachment" {
+  device_name = "/dev/sdh"
+  volume_id   = aws_ebs_volume.data_volume.id
+  instance_id = aws_instance.automq_byoc_console.id
 }
