@@ -253,3 +253,11 @@ resource "aws_eip" "web_ip" {
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
+
+locals {
+  public_subnet_id = var.create_new_vpc ? module.automq_byoc_vpc[0].public_subnets[0] : var.automq_byoc_env_console_public_subnet_id
+}
+
+data "aws_subnet" "public_subnet_info" {
+  id = local.public_subnet_id
+}

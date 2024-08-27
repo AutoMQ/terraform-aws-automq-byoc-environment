@@ -32,7 +32,7 @@ resource "aws_instance" "automq_byoc_console" {
 }
 
 resource "aws_ebs_volume" "data_volume" {
-  availability_zone = aws_instance.automq_byoc_console.availability_zone
+  availability_zone = data.aws_subnet.public_subnet_info.availability_zone
   size              = 20
   type              = "gp3"
 
