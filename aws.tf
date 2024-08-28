@@ -245,15 +245,6 @@ locals {
   aws_iam_instance_profile_arn_encoded = urlencode(aws_iam_instance_profile.automq_byoc_instance_profile.arn)
 }
 
-resource "aws_eip" "web_ip" {
-  instance = aws_instance.automq_byoc_console.id
-
-  tags = {
-    automqVendor   = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
-}
-
 locals {
   public_subnet_id = var.create_new_vpc ? module.automq_byoc_vpc[0].public_subnets[0] : var.automq_byoc_env_console_public_subnet_id
 }
