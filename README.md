@@ -1,5 +1,5 @@
 # AWS AutoMQ BYOC Environment Terrafrom module
-![Preview](https://img.shields.io/badge/Lifecycle_Stage-Preview-blue?style=flat&logoColor=8A3BE2&labelColor=rgba)
+![General_Availability](https://img.shields.io/badge/Lifecycle_Stage-General_Availability(GA)-green?style=flat&logoColor=8A3BE2&labelColor=rgba)
 
 This module is designed for deploying the AutoMQ BYOC (Bring Your Own Cloud) environment using the AWS Provider within an AWS cloud environment.
 
@@ -15,10 +15,10 @@ For managing instances, topics, and other resources within the AutoMQ BYOC envir
 Before setting up the environment, you need to subscribe to the AutoMQ service on AWS Marketplace. This subscription is necessary for subsequent Terraform calls. You can find the AutoMQ product page by clicking [this link](https://aws.amazon.com/marketplace/pp/prodview-4k5ildfqsqzfo).
 
 Once you access the product page, click "Continue to Subscribe."
-![Service Product Screenshot](https://image.automq.com/20240822bot/ty82iq.png)
+![Service Product Screenshot](https://image.automq.com/20240829bot/nhl79d.png)
 
 Agree to the terms and conditions to complete the service subscription.
-![Agree to Service Terms](https://image.automq.com/20240822bot/nhifcf.png)
+![Agree to Service Terms](https://image.automq.com/20240829bot/bm5iol.png)
 
 
 # Module Usage
