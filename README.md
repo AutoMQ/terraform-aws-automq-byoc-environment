@@ -27,10 +27,28 @@ Use this module to install the AutoMQ BYOC environment, supporting two modes:
 - **Create a new VPC**: Recommended only for POC or other testing scenarios. In this mode, the user only needs to specify the region, and resources including VPC, Endpoint, Security Group, S3 Bucket, etc., will be created. After testing, all resources can be destroyed with one click.
 - **Using an existing VPC**: Recommended for production environments. In this mode, the user needs to provide a VPC, subnet, and S3 Bucket that meet the requirements. AutoMQ will deploy the BYOC environment console to the user-specified subnet.
 
-## Create a new VPC
+## Quick Start
+
+1. **Install Terraform**
+
+   Ensure Terraform is installed on your system. You can download it from the [Terraform website](https://www.terraform.io/downloads.html).
+
+2. **Configure AWS Credentials**
+
+   Make sure your AWS CLI is configured with the necessary credentials. You can configure it using the following command:
+
+   ```bash
+   aws configure
+   ```
+
+3. **Create Terraform Configuration File**
+
+   Create a file named `main.tf` in your working directory and add the following content:
+
+### Create a new VPC
 
 ```terraform
-module "automq_byoc" {
+module "automq-byoc" {
   source = "AutoMQ/automq-byoc-environment/aws"
 
   # Set the identifier for the environment to be installed. This ID will be used for naming internal resources. The environment ID supports only uppercase and lowercase English letters, numbers, and hyphens (-). It must start with a letter and is limited to a length of 32 characters.
@@ -42,43 +60,37 @@ module "automq_byoc" {
 
 # Necessary outputs
 output "automq_byoc_env_id" {
-  description = "This parameter is used to create resources within the environment."
   value = module.automq-byoc.automq_byoc_env_id
 }
 
 output "automq_byoc_endpoint" {
-  description = "Address accessed by AutoMQ BYOC service"
   value = module.automq-byoc.automq_byoc_endpoint
 }
 
 output "automq_byoc_initial_username" {
-  description = "The initial username for the AutoMQ environment console. It has the `EnvironmentAdmin` role permissions. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
-  value = "admin"
+  value = module.automq-byoc.automq_byoc_initial_username"
 }
 
 output "automq_byoc_initial_password" {
-  description = "The initial password for the AutoMQ environment console. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
   value = module.automq-byoc.automq_byoc_initial_password
 }
 
 output "automq_byoc_vpc_id" {
-  description = "The VPC ID for the AutoMQ environment deployment."
   value = module.automq-byoc.automq_byoc_vpc_id
 }
 
 output "automq_byoc_instance_id" {
-  description = "AutoMQ BYOC Console instance ID."
   value = module.automq-byoc.automq_byoc_instance_id
 }
 
 ```
 
-## Using an existing VPC
+### Using an existing VPC
 
 To install the AutoMQ BYOC environment using an existing VPC, ensure your existing VPC meets the necessary requirements. You can find the detailed requirements in the [Prepare VPC Documents](https://docs.automq.com/automq-cloud/getting-started/install-byoc-environment/aws/prepare-vpc).
 
 ```terraform
-module "automq_byoc" {
+module "automq-byoc" {
   source = "AutoMQ/automq-byoc-environment/aws"
   
   # Set the identifier for the environment to be installed. This ID will be used for naming internal resources. The environment ID supports only uppercase and lowercase English letters, numbers, and hyphens (-). It must start with a letter and is limited to a length of 32 characters.  
@@ -100,37 +112,76 @@ module "automq_byoc" {
 
 # Necessary outputs
 output "automq_byoc_env_id" {
-  description = "This parameter is used to create resources within the environment."
   value = module.automq-byoc.automq_byoc_env_id
 }
 
 output "automq_byoc_endpoint" {
-  description = "Address accessed by AutoMQ BYOC service"
   value = module.automq-byoc.automq_byoc_endpoint
 }
 
 output "automq_byoc_initial_username" {
-  description = "The initial username for the AutoMQ environment console. It has the `EnvironmentAdmin` role permissions. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
-  value = "admin"
+  value = module.automq-byoc.automq_byoc_initial_username
 }
 
 output "automq_byoc_initial_password" {
-  description = "The initial password for the AutoMQ environment console. This account is used to log in to the environment, create ServiceAccounts, and manage other resources. For detailed information about environment members, please refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts)."
   value = module.automq-byoc.automq_byoc_initial_password
 }
 
 output "automq_byoc_vpc_id" {
-  description = "The VPC ID for the AutoMQ environment deployment."
   value = module.automq-byoc.automq_byoc_vpc_id
 }
 
 output "automq_byoc_instance_id" {
-  description = "AutoMQ BYOC Console instance ID."
   value = module.automq-byoc.automq_byoc_instance_id
 }
 
 ```
-After deployment is complete, you can refer to the output to obtain information such as the AutoMQ environment console endpoint, initial username, and initial password.
+
+4. **Initialize Terraform**
+
+   Run the following command to initialize Terraform:
+
+   ```bash
+   terraform init
+   ```
+
+5. **Apply Terraform Configuration**
+
+   Run the following command to apply the Terraform configuration and create the resources:
+
+   ```bash
+   terraform apply
+   ```
+
+   Confirm the action by typing `yes` when prompted.
+
+6. **Retrieve Outputs**
+
+   After the deployment is complete, run the following command to retrieve the outputs:
+
+   ```bash
+   terraform output
+   ```
+
+   This will display the AutoMQ environment console endpoint, initial username, and initial password.
+
+7. **Access AutoMQ Environment Console**
+
+   Use the `automq_byoc_endpoint`, `automq_byoc_initial_username`, and `automq_byoc_initial_password` to access the AutoMQ environment console via a web browser.
+
+8. **Manage Resources**
+
+   You can manage resources within the AutoMQ BYOC environment using the Web UI or Terraform. For more details, refer to the [documentation](https://docs.automq.com/automq-cloud/manage-identities-and-access/member-accounts).
+
+9. **Clean Up Resources**
+
+   If you no longer need the resources, you can destroy them by running:
+
+   ```bash
+   terraform destroy
+   ```
+
+   Confirm the action by typing `yes` when prompted.
 
 # Helpful Links/Information
 
