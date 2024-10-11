@@ -10,17 +10,6 @@ Upon completion of the installation, the module will output the endpoint of the 
 
 For managing instances, topics, and other resources within the AutoMQ BYOC environment using the AutoMQ Terraform Provider, please refer to the [documentation](https://registry.terraform.io/providers/AutoMQ/automq/latest/docs).
 
-# Prerequisites: Subscribe to AutoMQ Service on AWS Marketplace
-
-Before setting up the environment, you need to subscribe to the AutoMQ service on AWS Marketplace. This subscription is necessary for subsequent Terraform calls. You can find the AutoMQ product page by clicking [this link](https://aws.amazon.com/marketplace/pp/prodview-4k5ildfqsqzfo).
-
-Once you access the product page, click "Continue to Subscribe."
-![Service Product Screenshot](https://image.automq.com/20240829bot/nhl79d.png)
-
-Agree to the terms and conditions to complete the service subscription.
-![Agree to Service Terms](https://image.automq.com/20240829bot/bm5iol.png)
-
-
 # Module Usage
 Use this module to install the AutoMQ BYOC environment, supporting two modes:
 
