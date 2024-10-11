@@ -1,5 +1,5 @@
 resource "aws_instance" "automq_byoc_console" {
-  ami                    = var.specified_ami_by_marketplace ? data.aws_ami.marketplace_ami_details.id : var.automq_byoc_env_console_ami
+  ami                    = data.aws_ami.console_ami.id
   instance_type          = var.automq_byoc_ec2_instance_type
   subnet_id              = local.automq_byoc_env_console_public_subnet_id
   vpc_security_group_ids = [aws_security_group.automq_byoc_console_sg.id]
