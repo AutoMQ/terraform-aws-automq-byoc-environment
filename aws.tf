@@ -12,7 +12,7 @@ module "automq_byoc_data_bucket_name" {
   force_destroy = true
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -27,7 +27,7 @@ module "automq_byoc_ops_bucket_name" {
   force_destroy = true
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -39,8 +39,8 @@ module "automq_byoc_vpc" {
   version = "5.0.0"
 
   count = var.create_new_vpc ? 1 : 0
-  cidr = "10.0.0.0/16"
-  name = "automq-byoc-vpc-${var.automq_byoc_env_id}"
+  cidr  = "10.0.0.0/16"
+  name  = "automq-byoc-vpc-${var.automq_byoc_env_id}"
 
   azs             = slice(data.aws_availability_zones.available_azs.names, 0, 3)
   public_subnets  = ["10.0.0.0/20"]
@@ -50,7 +50,7 @@ module "automq_byoc_vpc" {
   enable_dns_hostnames = true
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -76,8 +76,8 @@ resource "aws_security_group" "vpc_endpoint_sg" {
   }
 
   tags = {
-    Name = "automq-byoc-endpoint-sg-${var.automq_byoc_env_id}"
-    automqVendor   = "automq"
+    Name                = "automq-byoc-endpoint-sg-${var.automq_byoc_env_id}"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -85,17 +85,17 @@ resource "aws_security_group" "vpc_endpoint_sg" {
 resource "aws_vpc_endpoint" "ec2_endpoint" {
   count = var.create_new_vpc ? 1 : 0
 
-  vpc_id            = module.automq_byoc_vpc[0].vpc_id
-  service_name      = "com.amazonaws.${var.cloud_provider_region}.ec2"
-  vpc_endpoint_type = "Interface"
+  vpc_id             = module.automq_byoc_vpc[0].vpc_id
+  service_name       = "com.amazonaws.${var.cloud_provider_region}.ec2"
+  vpc_endpoint_type  = "Interface"
   security_group_ids = [aws_security_group.vpc_endpoint_sg[0].id]
-  subnet_ids        = module.automq_byoc_vpc[0].private_subnets
+  subnet_ids         = module.automq_byoc_vpc[0].private_subnets
 
   private_dns_enabled = true
 
   tags = {
-    Name = "automq-byoc-ec2-endpoint-${var.automq_byoc_env_id}"
-    automqVendor   = "automq"
+    Name                = "automq-byoc-ec2-endpoint-${var.automq_byoc_env_id}"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -113,8 +113,8 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
   )
 
   tags = {
-    Name = "automq-byoc-s3-endpoint-${var.automq_byoc_env_id}"
-    automqVendor   = "automq"
+    Name                = "automq-byoc-s3-endpoint-${var.automq_byoc_env_id}"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -131,19 +131,15 @@ data "aws_vpc" "vpc_id" {
 }
 
 locals {
-  ssm_parameter_path = "/aws/service/marketplace/prod-nl2cyzygb46fw/${var.automq_byoc_env_version}"
+  image_name  = var.use_custom_ami ? var.automq_byoc_env_console_ami : format("AutoMQ-control-center-Prod-%s-x86_64", var.automq_byoc_env_version)
 }
 
-data "aws_ssm_parameter" "marketplace_ami" {
-  name = local.ssm_parameter_path
-}
-
-data "aws_ami" "marketplace_ami_details" {
+data "aws_ami" "console_ami" {
   most_recent = true
 
   filter {
-    name   = "image-id"
-    values = [data.aws_ssm_parameter.marketplace_ami.value]
+    name   = "name"
+    values = [local.image_name]
   }
 }
 
@@ -166,7 +162,7 @@ resource "aws_security_group" "automq_byoc_console_sg" {
   }
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -178,9 +174,9 @@ resource "aws_iam_role" "automq_byoc_role" {
     Version = "2012-10-17"
     Statement = [
       {
-        Action    = "sts:AssumeRole"
-        Effect    = "Allow"
-        Sid       = ""
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
         Principal = {
           Service = "ec2.amazonaws.com"
         }
@@ -189,7 +185,7 @@ resource "aws_iam_role" "automq_byoc_role" {
   })
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -204,7 +200,7 @@ resource "aws_iam_policy" "automq_byoc_policy" {
   })
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -219,7 +215,7 @@ resource "aws_iam_instance_profile" "automq_byoc_instance_profile" {
   role = aws_iam_role.automq_byoc_role.name
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
@@ -236,7 +232,15 @@ resource "aws_route53_zone" "private_r53" {
   }
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
+}
+
+resource "aws_eip" "web_ip" {
+  instance = aws_instance.automq_byoc_console.id
+  tags = {
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }

@@ -57,17 +57,17 @@ variable "automq_byoc_ec2_instance_type" {
 variable "automq_byoc_env_version" {
   description = "Set the version for the AutoMQ BYOC environment console. It is recommended to keep the default value, which is the latest version. Historical release note reference [document](https://docs.automq.com/automq-cloud/release-notes)."
   type        = string
-  default     = "latest"
+  default     = "1.2.10"
 }
 
-variable "specified_ami_by_marketplace" {
-  description = "The parameter defaults to true, which means the AMI will be obtained from AWS Marketplace. If you wish to use a custom AMI, set this parameter to false and specify the `automq_byoc_env_console_ami` parameter with your custom AMI ID."
+variable "use_custom_ami" {
+  description = "The parameter defaults to false, which means a specific AMI is not specified. If you wish to use a custom AMI, set this parameter to true and specify the `automq_byoc_env_console_ami` parameter with your custom AMI ID."
   type        = bool
-  default     = true
+  default     = false
 }
 
 variable "automq_byoc_env_console_ami" {
-  description = "When parameter `specified_ami_by_marketplace` set to false, this parameter must set a custom AMI to deploy automq console."
+  description = "When the `use_custom_ami` parameter is set to true, this parameter must be set with a custom AMI Name to deploy the AutoMQ console."
   type        = string
   default     = ""
 }

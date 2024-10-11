@@ -5,7 +5,7 @@ output "automq_byoc_env_id" {
 
 output "automq_byoc_endpoint" {
   description = "The endpoint for the AutoMQ environment console. Users can set this endpoint to the AutoMQ Terraform Provider to manage resources through Terraform. Additionally, users can access this endpoint via web browser, log in, and manage resources within the environment using the WebUI."
-  value = "http://${aws_instance.automq_byoc_console.public_ip}:8080"
+  value = "http://${aws_eip.web_ip.public_ip}:8080"
 }
 
 output "automq_byoc_initial_username" {
@@ -41,7 +41,7 @@ output "automq_byoc_ops_bucket_name" {
 
 output "automq_byoc_env_console_ec2_instance_ip" {
   description = "The instance IP of the deployed AutoMQ BYOC control panel. You can access the service through this IP."
-  value = aws_instance.automq_byoc_console.public_ip
+  value = aws_eip.web_ip.public_ip
 }
 
 output "automq_byoc_env_console_public_subnet_id" {
