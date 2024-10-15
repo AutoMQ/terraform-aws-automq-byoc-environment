@@ -62,6 +62,8 @@
         "ec2:AuthorizeSecurityGroupIngress",
         "ec2:AuthorizeSecurityGroupEgress",
         "ec2:DeleteSecurityGroup",
+        "ec2:DescribeAddresses",
+        "ec2:AssociateAddress",
         "autoscaling:CreateAutoScalingGroup",
         "autoscaling:DescribeAutoScalingGroups",
         "autoscaling:UpdateAutoScalingGroup",
