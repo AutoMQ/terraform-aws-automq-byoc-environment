@@ -172,6 +172,13 @@ resource "aws_security_group" "automq_byoc_console_sg" {
     cidr_blocks = [var.automq_byoc_env_console_cidr]
   }
 
+  ingress {
+    from_port   = 22
+    to_port     = 22
+    protocol    = "tcp"
+    cidr_blocks = [var.automq_byoc_env_console_cidr]
+  }
+
   egress {
     from_port   = 0
     to_port     = 0
