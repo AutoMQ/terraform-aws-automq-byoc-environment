@@ -137,6 +137,24 @@ resource "aws_vpc_endpoint" "s3table_endpoint" {
   }
 }
 
+resource "aws_vpc_endpoint" "glue_endpoint" {
+  count = var.create_new_vpc ? 1 : 0
+
+  vpc_id             = module.automq_byoc_vpc[0].vpc_id
+  service_name       = "com.amazonaws.${var.cloud_provider_region}.glue"
+  vpc_endpoint_type  = "Interface"
+  security_group_ids = [aws_security_group.vpc_endpoint_sg[0].id]
+  subnet_ids         = module.automq_byoc_vpc[0].private_subnets
+
+  private_dns_enabled = true
+
+  tags = {
+    Name                = "automq-byoc-ec2-endpoint-${var.automq_byoc_env_id}"
+    automqVendor        = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
+}
+
 locals {
   automq_byoc_vpc_id                       = var.create_new_vpc ? module.automq_byoc_vpc[0].vpc_id : var.automq_byoc_vpc_id
   automq_byoc_env_console_public_subnet_id = var.create_new_vpc ? element(module.automq_byoc_vpc[0].public_subnets, 0) : var.automq_byoc_env_console_public_subnet_id
