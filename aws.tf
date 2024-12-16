@@ -120,7 +120,7 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
 }
 
 resource "aws_vpc_endpoint" "s3table_endpoint" {
-  count = var.create_new_vpc ? 1 : 0
+  count = var.create_new_vpc && (var.cloud_provider_region == "us-east-1" || var.cloud_provider_region == "us-east-2" || var.cloud_provider_region == "us-west-2") ? 1 : 0
 
   vpc_id             = module.automq_byoc_vpc[0].vpc_id
   service_name       = "com.amazonaws.${var.cloud_provider_region}.s3tables"
