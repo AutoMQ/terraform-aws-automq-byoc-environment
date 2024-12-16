@@ -57,7 +57,7 @@ output "automq_byoc_endpoint" {
 }
 
 output "automq_byoc_initial_username" {
-  value = module.automq-byoc.automq_byoc_initial_username"
+  value = module.automq-byoc.automq_byoc_initial_username
 }
 
 output "automq_byoc_initial_password" {
