@@ -57,7 +57,7 @@ variable "automq_byoc_ec2_instance_type" {
 variable "automq_byoc_env_version" {
   description = "Set the version for the AutoMQ BYOC environment console. It is recommended to keep the default value, which is the latest version. Historical release note reference [document](https://docs.automq.com/automq-cloud/release-notes)."
   type        = string
-  default     = "1.2.10"
+  default     = "1.5.4"
 }
 
 variable "use_custom_ami" {
@@ -70,4 +70,14 @@ variable "automq_byoc_env_console_ami" {
   description = "When the `use_custom_ami` parameter is set to true, this parameter must be set with a custom AMI Name to deploy the AutoMQ console."
   type        = string
   default     = ""
+}
+
+variable "automq_byoc_default_deploy_type" {
+  description = "Set the default deployment type for the AutoMQ BYOC environment. Currently, 'vm' and 'k8s' are supported."
+  validation {
+    condition     = var.automq_byoc_default_deploy_type == "k8s" || var.automq_byoc_default_deploy_type == "vm"
+    error_message = "Only 'k8s' and 'vm' are supported for automq_byoc_default_deploy_type."
+  }
+  type    = string
+  default = "vm"
 }

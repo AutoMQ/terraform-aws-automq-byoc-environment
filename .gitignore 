@@ -25,6 +25,11 @@ override.tf.json
 terraform.rc
 .terraform/*
 
+.terraform.lock.hcl
+.terraform/
+terraform.tfstate
+terraform.tfstate.backup
+
 # Ignore editor config files
 .editorconfig
 
