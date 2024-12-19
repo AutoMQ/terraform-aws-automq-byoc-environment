@@ -88,16 +88,6 @@
       "Action": [
         "s3:GetLifecycleConfiguration",
         "s3:PutLifecycleConfiguration",
-        "s3:ListBucket"
-      ],
-      "Resource": "*"
-    },
-    {
-      "Effect": "Allow",
-      "Action": [
-        "s3:GetLifecycleConfiguration",
-        "s3:PutLifecycleConfiguration",
-        "s3:ListBucket"
       ],
       "Resource": [
         "arn:aws:s3:::${automq_data_bucket}",
