@@ -234,6 +234,7 @@ resource "aws_iam_role" "automq_byoc_role" {
 }
 
 resource "aws_iam_policy" "automq_byoc_policy" {
+  count = var.automq_byoc_default_deploy_type == "vm" ? 1 : 0
   name        = "automq-byoc-service-policy-${var.automq_byoc_env_id}"
   description = "Custom policy for automq_byoc service"
 
@@ -248,9 +249,25 @@ resource "aws_iam_policy" "automq_byoc_policy" {
   }
 }
 
+resource "aws_iam_policy" "automq_byoc_k8s_policy" {
+  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
+  name        = "automq-byoc-service-k8s-policy-${var.automq_byoc_env_id}"
+  description = "Custom policy for automq_byoc service"
+
+  policy = templatefile("${path.module}/tpls/automq_byoc_role_k8s_policy.json.tpl", {
+    automq_data_bucket = local.automq_data_bucket
+    automq_ops_bucket  = local.automq_ops_bucket
+  })
+
+  tags = {
+    automqVendor        = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
+}
+
 resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment" {
   role       = aws_iam_role.automq_byoc_role.name
-  policy_arn = aws_iam_policy.automq_byoc_policy.arn
+  policy_arn = var.automq_byoc_default_deploy_type == "k8s" ? aws_iam_policy.automq_byoc_k8s_policy[0].arn : aws_iam_policy.automq_byoc_policy[0].arn
 }
 
 resource "aws_iam_instance_profile" "automq_byoc_instance_profile" {
