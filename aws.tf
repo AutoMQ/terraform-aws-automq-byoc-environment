@@ -257,6 +257,7 @@ resource "aws_iam_role" "automq_byoc_node_role" {
   }
 }
 
+# https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/create-node-role.html
 resource "aws_iam_role_policy_attachment" "nodes-AmazonEKSWorkerNodePolicy" {  
   count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"  
@@ -275,6 +276,7 @@ resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadO
   role       = aws_iam_role.automq_byoc_node_role[0].name  
 }
 
+# https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/#option-b-attach-iam-policies-to-nodes
 resource "aws_iam_role_policy" "aws_load-balancer_policy" {
   count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
   name = "aws-load-balancer-controller-service-policy-${var.automq_byoc_env_id}"
@@ -283,6 +285,7 @@ resource "aws_iam_role_policy" "aws_load-balancer_policy" {
   policy = file("${path.module}/tpls/aws_load_balancer_controller_service_policy.json.tpl")
 }
 
+# https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md
 resource "aws_iam_role_policy" "aws_cluster_auto_scaler_policy" {
   count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
   name = "aws-cluster-auto-scaler-policy-${var.automq_byoc_env_id}"
