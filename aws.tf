@@ -233,6 +233,76 @@ resource "aws_iam_role" "automq_byoc_role" {
   }
 }
 
+resource "aws_iam_role" "automq_byoc_node_role" {
+  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
+  name = "automq-byoc-node-role-${var.automq_byoc_env_id}"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Sid    = ""
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      },
+    ]
+  })
+
+  tags = {
+    automqVendor        = "automq"
+    automqEnvironmentID = var.automq_byoc_env_id
+  }
+}
+
+resource "aws_iam_role_policy_attachment" "nodes-AmazonEKSWorkerNodePolicy" {  
+  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"  
+  role       = aws_iam_role.automq_byoc_node_role[0].name  
+}
+
+resource "aws_iam_role_policy_attachment" "nodes-AmazonEKS_CNI_Policy" {  
+  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"  
+  role       = aws_iam_role.automq_byoc_node_role[0].name  
+}
+
+resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadOnly" {  
+  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"  
+  role       = aws_iam_role.automq_byoc_node_role[0].name  
+}
+
+resource "aws_iam_role_policy" "aws_load-balancer_policy" {
+  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
+  name = "aws-load-balancer-controller-service-policy-${var.automq_byoc_env_id}"
+  role = aws_iam_role.automq_byoc_node_role[0].name
+
+  policy = file("${path.module}/tpls/aws_load_balancer_controller_service_policy.json.tpl")
+}
+
+resource "aws_iam_role_policy" "aws_cluster_auto_scaler_policy" {
+  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
+  name = "aws-cluster-auto-scaler-policy-${var.automq_byoc_env_id}"
+  role = aws_iam_role.automq_byoc_node_role[0].name
+
+  policy = file("${path.module}/tpls/aws_cluster_auto_scaler_policy.json.tpl")
+}
+
+resource "aws_iam_role_policy" "automq_s3_policy" {
+  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
+  name = "automq-s3-policy-${var.automq_byoc_env_id}"
+  role = aws_iam_role.automq_byoc_node_role[0].name
+
+  policy = templatefile("${path.module}/tpls/automq_node_s3_policy.json.tpl", {
+    automq_data_bucket = local.automq_data_bucket
+    automq_ops_bucket  = local.automq_ops_bucket
+  })
+}
+
+
 resource "aws_iam_policy" "automq_byoc_policy" {
   count = var.automq_byoc_default_deploy_type == "vm" ? 1 : 0
   name        = "automq-byoc-service-policy-${var.automq_byoc_env_id}"
