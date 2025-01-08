@@ -49,6 +49,11 @@ module "automq_byoc_vpc" {
   enable_dns_support   = true
   enable_dns_hostnames = true
 
+  # NAT Gateway 
+  # if the deploy type is k8s, then enable_nat_gateway is true, single_nat_gateway is true
+  enable_nat_gateway   = var.automq_byoc_default_deploy_type == "k8s"
+  single_nat_gateway   = var.automq_byoc_default_deploy_type == "k8s"
+
   tags = {
     automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
