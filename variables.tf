@@ -57,7 +57,13 @@ variable "automq_byoc_ec2_instance_type" {
 variable "automq_byoc_env_version" {
   description = "Set the version for the AutoMQ BYOC environment console. It is recommended to keep the default value, which is the latest version. Historical release note reference [document](https://docs.automq.com/automq-cloud/release-notes)."
   type        = string
-  default     = "1.5.7"
+  default     = "1.5.12"
+}
+
+variable "automq_byoc_env_console_key_name" {
+  description = "Specify the key pair name for accessing the AutoMQ BYOC environment console. If not specified, the console will be deployed without a key pair."
+  type        = string
+  default     = ""
 }
 
 variable "use_custom_ami" {
