@@ -11,6 +11,8 @@ resource "aws_instance" "automq_byoc_console" {
     volume_type = "gp3"
   }
 
+  key_name = var.automq_byoc_env_console_key_name
+
   tags = {
     Name = "automq-byoc-console-${var.automq_byoc_env_id}"
     automqVendor   = "automq"
@@ -30,6 +32,11 @@ resource "aws_instance" "automq_byoc_console" {
     environment_id                       = var.automq_byoc_env_id
     deploy_type                          = var.automq_byoc_default_deploy_type
   })
+}
+
+data "aws_key_pair" "select" {
+  count = var.automq_byoc_env_console_key_name != "" ? 1 : 0
+  key_name = var.automq_byoc_env_console_key_name
 }
 
 resource "aws_ebs_volume" "data_volume" {
