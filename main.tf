@@ -14,8 +14,8 @@ resource "aws_instance" "automq_byoc_console" {
   key_name = var.automq_byoc_env_console_key_name
 
   tags = {
-    Name = "automq-byoc-console-${var.automq_byoc_env_id}"
-    automqVendor   = "automq"
+    Name                = "automq-byoc-console-${var.automq_byoc_env_id}"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 
@@ -34,18 +34,13 @@ resource "aws_instance" "automq_byoc_console" {
   })
 }
 
-data "aws_key_pair" "select" {
-  count = var.automq_byoc_env_console_key_name != "" ? 1 : 0
-  key_name = var.automq_byoc_env_console_key_name
-}
-
 resource "aws_ebs_volume" "data_volume" {
   availability_zone = data.aws_subnet.public_subnet_info.availability_zone
   size              = 20
   type              = "gp3"
 
   tags = {
-    automqVendor   = "automq"
+    automqVendor        = "automq"
     automqEnvironmentID = var.automq_byoc_env_id
   }
 }
