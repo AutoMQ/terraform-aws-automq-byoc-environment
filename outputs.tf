@@ -35,7 +35,22 @@ output "automq_byoc_console_role_arn" {
 
 output "automq_byoc_eks_node_role_arn" {
   description = "AutoMQ BYOC requires this role to be bound to the EKS Node group."
-  value       = aws_iam_role.automq_byoc_role.arn
+  value       = aws_iam_role.automq_byoc_node_role.arn
+}
+
+output "automq_byoc_security_group_name" {
+  description = "Security group bound to the AutoMQ BYOC service."
+  value       = aws_security_group.automq_byoc_console_sg.name
+}
+
+output "public_subnet_id" {
+  description = "The VPC subnet for the AutoMQ environment deployment."
+  value       = local.automq_byoc_env_console_public_subnet_id
+}
+
+output "private_subnets" {
+  description = "The VPC subnet for the AutoMQ environment deployment.If the create_new_vpc is set to true, the private subnet will be created."
+  value       = var.create_new_vpc ? module.automq_byoc_vpc.private_subnets : []
 }
 
 /*
