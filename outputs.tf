@@ -35,7 +35,7 @@ output "automq_byoc_console_role_arn" {
 
 output "automq_byoc_eks_node_role_arn" {
   description = "AutoMQ BYOC requires this role to be bound to the EKS Node group."
-  value       = aws_iam_role.automq_byoc_node_role.arn
+  value       = try(aws_iam_role.automq_byoc_node_role[0].arn, "")
 }
 
 output "automq_byoc_security_group_id" {
