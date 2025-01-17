@@ -38,9 +38,9 @@ output "automq_byoc_eks_node_role_arn" {
   value       = aws_iam_role.automq_byoc_node_role.arn
 }
 
-output "automq_byoc_security_group_name" {
+output "automq_byoc_security_group_id" {
   description = "Security group bound to the AutoMQ BYOC service."
-  value       = aws_security_group.automq_byoc_console_sg.name
+  value       = aws_security_group.automq_byoc_console_sg.id
 }
 
 output "public_subnet_id" {
