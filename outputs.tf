@@ -50,7 +50,7 @@ output "public_subnet_id" {
 
 output "private_subnets" {
   description = "The VPC subnet for the AutoMQ environment deployment.If the create_new_vpc is set to true, the private subnet will be created."
-  value       = var.create_new_vpc ? module.automq_byoc_vpc.private_subnets : []
+  value       = try(module.automq_byoc_vpc[0].private_subnets, [])
 }
 
 /*
