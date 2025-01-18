@@ -18,7 +18,7 @@
       "Effect": "Allow",
       "Action": [
         "ec2:DescribeVolumes",
-        "ec2:DescribeVolumes"
+        "ec2:DescribeSecurityGroups"
       ],
       "Resource": "*"
     },
