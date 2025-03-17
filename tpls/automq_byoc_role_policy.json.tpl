@@ -62,6 +62,7 @@
         "ec2:AuthorizeSecurityGroupIngress",
         "ec2:AuthorizeSecurityGroupEgress",
         "ec2:DeleteSecurityGroup",
+        "ec2:DescribeVpcEndpoints",
         "autoscaling:CreateAutoScalingGroup",
         "autoscaling:DescribeAutoScalingGroups",
         "autoscaling:UpdateAutoScalingGroup",
