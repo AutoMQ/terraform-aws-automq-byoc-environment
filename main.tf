@@ -30,7 +30,6 @@ resource "aws_instance" "automq_byoc_console" {
     instance_dns                         = aws_route53_zone.private_r53.zone_id,
     instance_profile_arn                 = aws_iam_instance_profile.automq_byoc_instance_profile.arn,
     environment_id                       = var.automq_byoc_env_id
-    deploy_type                          = var.automq_byoc_default_deploy_type
   })
 }
 
