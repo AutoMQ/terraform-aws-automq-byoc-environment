@@ -51,8 +51,8 @@ module "automq_byoc_vpc" {
 
   # NAT Gateway 
   # if the deploy type is k8s, then enable_nat_gateway is true, single_nat_gateway is true
-  enable_nat_gateway = var.automq_byoc_default_deploy_type == "k8s"
-  single_nat_gateway = var.automq_byoc_default_deploy_type == "k8s"
+  enable_nat_gateway = true
+  single_nat_gateway = true
 
   tags = {
     automqVendor        = "automq"
@@ -238,81 +238,7 @@ resource "aws_iam_role" "automq_byoc_role" {
   }
 }
 
-resource "aws_iam_role" "automq_byoc_node_role" {
-  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
-  name  = "automq-byoc-node-role-${var.automq_byoc_env_id}"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [
-      {
-        Action = "sts:AssumeRole"
-        Effect = "Allow"
-        Sid    = ""
-        Principal = {
-          Service = "ec2.amazonaws.com"
-        }
-      },
-    ]
-  })
-
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
-}
-
-# https://docs.aws.amazon.com/zh_cn/eks/latest/userguide/create-node-role.html
-resource "aws_iam_role_policy_attachment" "nodes-AmazonEKSWorkerNodePolicy" {
-  count      = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
-  role       = aws_iam_role.automq_byoc_node_role[0].name
-}
-
-resource "aws_iam_role_policy_attachment" "nodes-AmazonEKS_CNI_Policy" {
-  count      = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
-  role       = aws_iam_role.automq_byoc_node_role[0].name
-}
-
-resource "aws_iam_role_policy_attachment" "nodes-AmazonEC2ContainerRegistryReadOnly" {
-  count      = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
-  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
-  role       = aws_iam_role.automq_byoc_node_role[0].name
-}
-
-# https://kubernetes-sigs.github.io/aws-load-balancer-controller/latest/deploy/installation/#option-b-attach-iam-policies-to-nodes
-resource "aws_iam_role_policy" "aws_load-balancer_policy" {
-  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
-  name  = "aws-load-balancer-controller-service-policy-${var.automq_byoc_env_id}"
-  role  = aws_iam_role.automq_byoc_node_role[0].name
-
-  policy = file("${path.module}/tpls/aws_load_balancer_controller_service_policy.json.tpl")
-}
-
-# https://github.com/kubernetes/autoscaler/blob/master/cluster-autoscaler/cloudprovider/aws/README.md
-resource "aws_iam_role_policy" "aws_cluster_auto_scaler_policy" {
-  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
-  name  = "aws-cluster-auto-scaler-policy-${var.automq_byoc_env_id}"
-  role  = aws_iam_role.automq_byoc_node_role[0].name
-
-  policy = file("${path.module}/tpls/aws_cluster_auto_scaler_policy.json.tpl")
-}
-
-resource "aws_iam_role_policy" "automq_s3_policy" {
-  count = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
-  name  = "automq-s3-policy-${var.automq_byoc_env_id}"
-  role  = aws_iam_role.automq_byoc_node_role[0].name
-
-  policy = templatefile("${path.module}/tpls/automq_node_s3_policy.json.tpl", {
-    automq_data_bucket = local.automq_data_bucket
-    automq_ops_bucket  = local.automq_ops_bucket
-  })
-}
-
-
 resource "aws_iam_policy" "automq_byoc_policy" {
-  count       = var.automq_byoc_default_deploy_type == "vm" ? 1 : 0
   name        = "automq-byoc-service-policy-${var.automq_byoc_env_id}"
   description = "Custom policy for automq_byoc service"
 
@@ -328,7 +254,6 @@ resource "aws_iam_policy" "automq_byoc_policy" {
 }
 
 resource "aws_iam_policy" "automq_byoc_k8s_policy" {
-  count       = var.automq_byoc_default_deploy_type == "k8s" ? 1 : 0
   name        = "automq-byoc-service-k8s-policy-${var.automq_byoc_env_id}"
   description = "Custom policy for automq_byoc service"
 
@@ -343,9 +268,14 @@ resource "aws_iam_policy" "automq_byoc_k8s_policy" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment" {
+resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment_k8s" {
   role       = aws_iam_role.automq_byoc_role.name
-  policy_arn = var.automq_byoc_default_deploy_type == "k8s" ? aws_iam_policy.automq_byoc_k8s_policy[0].arn : aws_iam_policy.automq_byoc_policy[0].arn
+  policy_arn = aws_iam_policy.automq_byoc_k8s_policy.arn
+}
+
+resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment_vm" {
+  role       = aws_iam_role.automq_byoc_role.name
+  policy_arn = aws_iam_policy.automq_byoc_policy.arn
 }
 
 resource "aws_iam_instance_profile" "automq_byoc_instance_profile" {

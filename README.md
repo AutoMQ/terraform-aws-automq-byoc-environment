@@ -212,15 +212,9 @@ output "automq_byoc_instance_id" {
 | [aws_iam_instance_profile.automq_byoc_instance_profile](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_instance_profile) | resource |
 | [aws_iam_policy.automq_byoc_k8s_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
 | [aws_iam_policy.automq_byoc_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_policy) | resource |
-| [aws_iam_role.automq_byoc_node_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role.automq_byoc_role](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
-| [aws_iam_role_policy.automq_s3_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
-| [aws_iam_role_policy.aws_cluster_auto_scaler_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
-| [aws_iam_role_policy.aws_load-balancer_policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
-| [aws_iam_role_policy_attachment.automq_byoc_role_attachment](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.nodes-AmazonEC2ContainerRegistryReadOnly](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.nodes-AmazonEKSWorkerNodePolicy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
-| [aws_iam_role_policy_attachment.nodes-AmazonEKS_CNI_Policy](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.automq_byoc_role_attachment_k8s](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
+| [aws_iam_role_policy_attachment.automq_byoc_role_attachment_vm](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_instance.automq_byoc_console](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/instance) | resource |
 | [aws_route53_zone.private_r53](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/route53_zone) | resource |
 | [aws_security_group.automq_byoc_console_sg](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/security_group) | resource |
@@ -252,7 +246,6 @@ output "automq_byoc_instance_id" {
 | <a name="input_automq_byoc_env_console_key_name"></a> [automq_byoc_env_console_key_name](#input_automq_byoc_env_console_key_name) | Specify the key pair name for accessing the AutoMQ BYOC environment console. If not specified, the console will be deployed without a key pair. | `string` | `""` | no |
 | <a name="input_use_custom_ami"></a> [use_custom_ami](#input_use_custom_ami) | The parameter defaults to false, which means a specific AMI is not specified. If you wish to use a custom AMI, set this parameter to true and specify the `automq_byoc_env_console_ami` parameter with your custom AMI ID. | `bool` | `false` | no |
 | <a name="input_automq_byoc_env_console_ami"></a> [automq_byoc_env_console_ami](#input_automq_byoc_env_console_ami) | When the `use_custom_ami` parameter is set to true, this parameter must be set with a custom AMI Name to deploy the AutoMQ console. | `string` | `""` | no |
-| <a name="input_automq_byoc_default_deploy_type"></a> [automq_byoc_default_deploy_type](#input_automq_byoc_default_deploy_type) | Set the default deployment type for the AutoMQ BYOC environment. Currently, 'vm' and 'k8s' are supported. | `string` | `"vm"` | no |
 
 ## Outputs
 
