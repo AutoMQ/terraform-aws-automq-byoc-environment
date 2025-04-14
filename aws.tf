@@ -165,6 +165,7 @@ locals {
   automq_byoc_env_console_public_subnet_id = var.create_new_vpc ? element(module.automq_byoc_vpc[0].public_subnets, 0) : var.automq_byoc_env_console_public_subnet_id
   automq_data_bucket                       = var.automq_byoc_data_bucket_name == "" ? module.automq_byoc_data_bucket_name.s3_bucket_id : "${var.automq_byoc_data_bucket_name}"
   automq_ops_bucket                        = var.automq_byoc_ops_bucket_name == "" ? module.automq_byoc_ops_bucket_name.s3_bucket_id : "${var.automq_byoc_ops_bucket_name}"
+  zone_id                                   = aws_route53_zone.private_r53.zone_id
 }
 
 data "aws_vpc" "vpc_id" {
