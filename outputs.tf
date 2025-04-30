@@ -48,9 +48,9 @@ output "private_subnets" {
   value       = try(module.automq_byoc_vpc[0].private_subnets, [])
 }
 
-output "dns_zone_id" {
-  description = "The Route53 zone id for the AutoMQ environment deployment."
-  value       = aws_route53_zone.private_r53.zone_id
+output "automq_byoc_vpc_route53_zone_id" {
+  description = "Route53 bound to the VPC."
+  value = aws_route53_zone.private_r53.zone_id
 }
 
 /*
@@ -92,11 +92,6 @@ output "automq_byoc_policy_arn" {
 output "automq_byoc_instance_profile_arn" {
   description = "Instance configuration file ARN"
   value = aws_iam_instance_profile.automq_byoc_instance_profile.arn
-}
-
-output "automq_byoc_vpc_route53_zone_id" {
-  description = "Route53 bound to the VPC."
-  value = aws_route53_zone.private_r53.zone_id
 }
 
 output "automq_byoc_env_console_ami" {
