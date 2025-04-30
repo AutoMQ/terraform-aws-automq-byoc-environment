@@ -27,7 +27,7 @@ resource "aws_instance" "automq_byoc_console" {
     automq_data_bucket                   = local.automq_data_bucket,
     automq_ops_bucket                    = local.automq_ops_bucket,
     instance_security_group_id           = aws_security_group.automq_byoc_console_sg.id,
-    instance_dns                         = aws_route53_zone.private_r53.zone_id,
+    instance_dns                         = local.zone_id,
     instance_profile_arn                 = aws_iam_instance_profile.automq_byoc_instance_profile.arn,
     environment_id                       = var.automq_byoc_env_id
   })
