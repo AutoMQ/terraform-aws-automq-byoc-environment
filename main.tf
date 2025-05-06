@@ -22,7 +22,7 @@ resource "aws_instance" "automq_byoc_console" {
   associate_public_ip_address = true
 
   # Initialize the AutoMQ BYOC console configuration
-  user_data = templatefile("${path.module}/tpls/userdata.tpl", {
+  user_data = var.automq_enviroment_console_init ? templatefile("${path.module}/tpls/userdata.tpl", {
     aws_iam_instance_profile_arn_encoded = local.aws_iam_instance_profile_arn_encoded,
     automq_data_bucket                   = local.automq_data_bucket,
     automq_ops_bucket                    = local.automq_ops_bucket,
@@ -30,7 +30,7 @@ resource "aws_instance" "automq_byoc_console" {
     instance_dns                         = local.zone_id,
     instance_profile_arn                 = aws_iam_instance_profile.automq_byoc_instance_profile.arn,
     environment_id                       = var.automq_byoc_env_id
-  })
+  }) : null
 }
 
 resource "aws_ebs_volume" "data_volume" {

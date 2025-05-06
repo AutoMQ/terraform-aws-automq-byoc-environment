@@ -77,3 +77,9 @@ variable "automq_byoc_env_console_ami" {
   type        = string
   default     = ""
 }
+
+variable "automq_enviroment_console_init" {
+  description = "Controls the environment console initialization. When false, manual initialization is required. Default is true."
+  type        = bool
+  default     = true
+}
