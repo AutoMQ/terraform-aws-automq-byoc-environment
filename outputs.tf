@@ -33,6 +33,11 @@ output "automq_byoc_console_role_arn" {
   value       = aws_iam_role.automq_byoc_role.arn
 }
 
+output "automq_byoc_console_instance_profile_arn" {
+  description = "IAM Instance profiles ARN"
+  value       = aws_iam_instance_profile.automq_byoc_instance_profile.arn
+}
+
 output "automq_byoc_security_group_id" {
   description = "Security group bound to the AutoMQ BYOC service."
   value       = aws_security_group.automq_byoc_console_sg.id
