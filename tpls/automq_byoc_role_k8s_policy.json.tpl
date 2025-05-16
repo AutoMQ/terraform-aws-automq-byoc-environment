@@ -29,6 +29,7 @@
         "ec2:DescribeSubnets",
         "ec2:DescribeVpcs",
         "ec2:DescribeTags",
+        "ec2:DescribeAvailabilityZones",
         "route53:CreateHostedZone",
         "route53:GetHostedZone",
         "route53:ChangeResourceRecordSets",
