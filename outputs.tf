@@ -50,7 +50,7 @@ output "private_subnets" {
 
 output "automq_byoc_vpc_route53_zone_id" {
   description = "Route53 bound to the VPC."
-  value = aws_route53_zone.private_r53.zone_id
+  value       = aws_route53_zone.private_r53.zone_id
 }
 
 /*
