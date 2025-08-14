@@ -5,7 +5,7 @@ provider "aws" {
 # Conditional creation of data bucket
 module "automq_byoc_data_bucket_name" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "4.1.2"
+  version = "5.4.0"
 
   create_bucket = var.automq_byoc_data_bucket_name == "" ? true : false
   bucket        = "automq-data-${var.automq_byoc_env_id}"
@@ -20,7 +20,7 @@ module "automq_byoc_data_bucket_name" {
 # Conditional creation of ops bucket
 module "automq_byoc_ops_bucket_name" {
   source  = "terraform-aws-modules/s3-bucket/aws"
-  version = "4.1.2"
+  version = "5.4.0"
 
   create_bucket = var.automq_byoc_ops_bucket_name == "" ? true : false
   bucket        = "automq-ops-${var.automq_byoc_env_id}"
@@ -178,6 +178,7 @@ locals {
 
 data "aws_ami" "console_ami" {
   most_recent = true
+  owners      = ["730389100204"]
 
   filter {
     name   = "name"
