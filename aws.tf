@@ -178,7 +178,7 @@ locals {
 
 data "aws_ami" "console_ami" {
   most_recent = true
-  owners = ["730389100204"]
+  owners      = ["730389100204"]
 
   filter {
     name   = "name"
