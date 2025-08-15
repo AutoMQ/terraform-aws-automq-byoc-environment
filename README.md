@@ -45,6 +45,14 @@ module "automq-byoc" {
 
   # Set the target regionId of aws
   cloud_provider_region                    = "ap-southeast-1"  
+  
+  # Optional: Add additional tags to all resources
+  additional_tags = {
+    Environment = "Production"
+    Project     = "MyProject"
+    Owner       = "TeamA"
+    CostCenter  = "Engineering"
+  }
 }
 
 # Necessary outputs
@@ -246,6 +254,7 @@ output "automq_byoc_instance_id" {
 | <a name="input_automq_byoc_env_console_key_name"></a> [automq_byoc_env_console_key_name](#input_automq_byoc_env_console_key_name) | Specify the key pair name for accessing the AutoMQ BYOC environment console. If not specified, the console will be deployed without a key pair. | `string` | `""` | no |
 | <a name="input_use_custom_ami"></a> [use_custom_ami](#input_use_custom_ami) | The parameter defaults to false, which means a specific AMI is not specified. If you wish to use a custom AMI, set this parameter to true and specify the `automq_byoc_env_console_ami` parameter with your custom AMI ID. | `bool` | `false` | no |
 | <a name="input_automq_byoc_env_console_ami"></a> [automq_byoc_env_console_ami](#input_automq_byoc_env_console_ami) | When the `use_custom_ami` parameter is set to true, this parameter must be set with a custom AMI Name to deploy the AutoMQ console. | `string` | `""` | no |
+| <a name="input_additional_tags"></a> [additional_tags](#input_additional_tags) | Additional tags to apply to all resources created by this module. | `map(string)` | `{}` | no |
 
 ## Outputs
 
