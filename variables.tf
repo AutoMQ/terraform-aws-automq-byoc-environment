@@ -77,3 +77,9 @@ variable "automq_byoc_env_console_ami" {
   type        = string
   default     = ""
 }
+
+variable "additional_tags" {
+  description = "Additional tags to apply to all resources created by this module."
+  type        = map(string)
+  default     = {}
+}

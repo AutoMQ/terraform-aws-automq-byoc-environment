@@ -11,10 +11,7 @@ module "automq_byoc_data_bucket_name" {
   bucket        = "automq-data-${var.automq_byoc_env_id}"
   force_destroy = true
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 # Conditional creation of ops bucket
@@ -26,10 +23,7 @@ module "automq_byoc_ops_bucket_name" {
   bucket        = "automq-ops-${var.automq_byoc_env_id}"
   force_destroy = true
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 data "aws_availability_zones" "available_azs" {}
@@ -54,10 +48,7 @@ module "automq_byoc_vpc" {
   enable_nat_gateway = true
   single_nat_gateway = true
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 resource "aws_security_group" "vpc_endpoint_sg" {
@@ -80,11 +71,12 @@ resource "aws_security_group" "vpc_endpoint_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    Name                = "automq-byoc-endpoint-sg-${var.automq_byoc_env_id}"
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "automq-byoc-endpoint-sg-${var.automq_byoc_env_id}"
+    }
+  )
 }
 
 resource "aws_vpc_endpoint" "ec2_endpoint" {
@@ -98,11 +90,12 @@ resource "aws_vpc_endpoint" "ec2_endpoint" {
 
   private_dns_enabled = true
 
-  tags = {
-    Name                = "automq-byoc-ec2-endpoint-${var.automq_byoc_env_id}"
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "automq-byoc-ec2-endpoint-${var.automq_byoc_env_id}"
+    }
+  )
 }
 
 resource "aws_vpc_endpoint" "s3_endpoint" {
@@ -117,11 +110,12 @@ resource "aws_vpc_endpoint" "s3_endpoint" {
     module.automq_byoc_vpc[0].private_route_table_ids
   )
 
-  tags = {
-    Name                = "automq-byoc-s3-endpoint-${var.automq_byoc_env_id}"
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "automq-byoc-s3-endpoint-${var.automq_byoc_env_id}"
+    }
+  )
 }
 
 resource "aws_vpc_endpoint" "s3table_endpoint" {
@@ -135,11 +129,12 @@ resource "aws_vpc_endpoint" "s3table_endpoint" {
 
   private_dns_enabled = true
 
-  tags = {
-    Name                = "automq-byoc-ec2-endpoint-${var.automq_byoc_env_id}"
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "automq-byoc-s3table-endpoint-${var.automq_byoc_env_id}"
+    }
+  )
 }
 
 resource "aws_vpc_endpoint" "glue_endpoint" {
@@ -153,11 +148,12 @@ resource "aws_vpc_endpoint" "glue_endpoint" {
 
   private_dns_enabled = true
 
-  tags = {
-    Name                = "automq-byoc-ec2-endpoint-${var.automq_byoc_env_id}"
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "automq-byoc-glue-endpoint-${var.automq_byoc_env_id}"
+    }
+  )
 }
 
 locals {
@@ -166,6 +162,15 @@ locals {
   automq_data_bucket                       = var.automq_byoc_data_bucket_name == "" ? module.automq_byoc_data_bucket_name.s3_bucket_id : "${var.automq_byoc_data_bucket_name}"
   automq_ops_bucket                        = var.automq_byoc_ops_bucket_name == "" ? module.automq_byoc_ops_bucket_name.s3_bucket_id : "${var.automq_byoc_ops_bucket_name}"
   zone_id                                  = aws_route53_zone.private_r53.zone_id
+
+  # Common tags that will be applied to all resources
+  common_tags = merge(
+    {
+      automqVendor        = "automq"
+      automqEnvironmentID = var.automq_byoc_env_id
+    },
+    var.additional_tags
+  )
 }
 
 data "aws_vpc" "vpc_id" {
@@ -211,10 +216,7 @@ resource "aws_security_group" "automq_byoc_console_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 resource "aws_iam_role" "automq_byoc_role" {
@@ -234,10 +236,7 @@ resource "aws_iam_role" "automq_byoc_role" {
     ]
   })
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 resource "aws_iam_policy" "automq_byoc_policy" {
@@ -249,10 +248,7 @@ resource "aws_iam_policy" "automq_byoc_policy" {
     automq_ops_bucket  = local.automq_ops_bucket
   })
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 resource "aws_iam_policy" "automq_byoc_k8s_policy" {
@@ -264,10 +260,7 @@ resource "aws_iam_policy" "automq_byoc_k8s_policy" {
     automq_ops_bucket  = local.automq_ops_bucket
   })
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 resource "aws_iam_role_policy_attachment" "automq_byoc_role_attachment_k8s" {
@@ -284,10 +277,7 @@ resource "aws_iam_instance_profile" "automq_byoc_instance_profile" {
   name = "automq-byoc-instance-profile-${var.automq_byoc_env_id}"
   role = aws_iam_role.automq_byoc_role.name
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 resource "aws_route53_zone" "private_r53" {
@@ -301,18 +291,12 @@ resource "aws_route53_zone" "private_r53" {
     create_before_destroy = true
   }
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 resource "aws_eip" "web_ip" {
   instance = aws_instance.automq_byoc_console.id
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags     = local.common_tags
 }
 
 locals {

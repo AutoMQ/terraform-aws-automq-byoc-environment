@@ -13,11 +13,12 @@ resource "aws_instance" "automq_byoc_console" {
 
   key_name = var.automq_byoc_env_console_key_name
 
-  tags = {
-    Name                = "automq-byoc-console-${var.automq_byoc_env_id}"
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = merge(
+    local.common_tags,
+    {
+      Name = "automq-byoc-console-${var.automq_byoc_env_id}"
+    }
+  )
 
   associate_public_ip_address = true
 
@@ -38,10 +39,7 @@ resource "aws_ebs_volume" "data_volume" {
   size              = 20
   type              = "gp3"
 
-  tags = {
-    automqVendor        = "automq"
-    automqEnvironmentID = var.automq_byoc_env_id
-  }
+  tags = local.common_tags
 }
 
 resource "aws_volume_attachment" "data_volume_attachment" {
