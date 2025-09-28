@@ -57,7 +57,7 @@ variable "automq_byoc_ec2_instance_type" {
 variable "automq_byoc_env_version" {
   description = "Set the version for the AutoMQ BYOC environment console. It is recommended to keep the default value, which is the latest version. Historical release note reference [document](https://docs.automq.com/automq-cloud/release-notes)."
   type        = string
-  default     = "7.5.1"
+  default     = "7.7.1"
 }
 
 variable "automq_byoc_env_console_key_name" {
@@ -78,8 +78,15 @@ variable "automq_byoc_env_console_ami" {
   default     = ""
 }
 
+
 variable "automq_enviroment_console_init" {
   description = "Controls the environment console initialization. When false, manual initialization is required. Default is true."
   type        = bool
   default     = true
+}
+
+variable "additional_tags" {
+  description = "Additional tags to apply to all resources created by this module."
+  type        = map(string)
+  default     = {}
 }
