@@ -183,7 +183,7 @@ locals {
 
 data "aws_ami" "console_ami" {
   most_recent = true
-  owners      = ["730389100204"]
+  owners      =  var.use_custom_ami ? ["self"] : ["730389100204"]
 
   filter {
     name   = "name"
