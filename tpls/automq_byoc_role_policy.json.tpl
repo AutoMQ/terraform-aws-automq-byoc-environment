@@ -114,6 +114,7 @@
     {
       "Effect": "Allow",
       "Action": [
+        "ec2:DescribeRouteTables",
         "fsx:CreateFileSystem",
         "fsx:DeleteFileSystem",
         "fsx:CreateStorageVirtualMachine",
