@@ -3,7 +3,7 @@
 > [!CAUTION]
 > **This module is deprecated and no longer maintained.**
 > 
-> Please use the new deployment approach: **[AutoMQ BYOC Setup Guide](https://docs.automq.com/automq-cloud/getting-started/install-byoc-environment)**
+> Please use the new deployment approach: **[AutoMQ BYOC Setup Guide](https://www.automq.com/docs/automq-cloud/getting-started/overview)**
 
 ---
 

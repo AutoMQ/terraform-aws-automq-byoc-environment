@@ -1,6 +1,6 @@
 output "deprecation_warning" {
   description = "IMPORTANT: This module is deprecated and no longer maintained."
-  value       = "⚠️ DEPRECATED: This module is no longer maintained. Please migrate to: https://docs.automq.com/automq-cloud/getting-started/install-byoc-environment"
+  value       = "⚠️ DEPRECATED: This module is no longer maintained. Please migrate to: https://www.automq.com/docs/automq-cloud/getting-started/overview"
 }
 
 output "automq_byoc_env_id" {
