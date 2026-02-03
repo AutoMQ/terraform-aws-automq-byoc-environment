@@ -1,3 +1,8 @@
+output "deprecation_warning" {
+  description = "IMPORTANT: This module is deprecated and no longer maintained."
+  value       = "⚠️ DEPRECATED: This module is no longer maintained. Please migrate to: https://docs.automq.com/automq-cloud/getting-started/install-byoc-environment"
+}
+
 output "automq_byoc_env_id" {
   description = "This parameter is used to create resources within the environment. Additionally, all cloud resource names will incorporate this parameter as part of their names. This parameter supports only numbers, uppercase and lowercase English letters, and hyphens. It must start with a letter and is limited to a length of 32 characters."
   value       = var.automq_byoc_env_id
