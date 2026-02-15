@@ -110,6 +110,25 @@
         "arn:aws:s3:::${automq_data_bucket}/*",
         "arn:aws:s3:::${automq_ops_bucket}/*"
       ]
+    },
+    {
+      "Effect": "Allow",
+      "Action": [
+        "ec2:DescribeRouteTables",
+        "fsx:CreateFileSystem",
+        "fsx:DeleteFileSystem",
+        "fsx:CreateStorageVirtualMachine",
+        "fsx:TagResource",
+        "fsx:DescribeStorageVirtualMachines",
+        "fsx:UpdateVolume",
+        "fsx:DescribeFileSystems",
+        "fsx:DeleteStorageVirtualMachine",
+        "fsx:UpdateFileSystem",
+        "fsx:CreateVolume",
+        "fsx:DescribeVolumes",
+        "fsx:DeleteVolume"
+      ],
+      "Resource": "*"
     }
   ]
 }
